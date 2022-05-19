@@ -1,5 +1,8 @@
 package com.example.podcasttest.model.data
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 data class Channel(
     var title: String = "",
     var coverUrl: String = "",
@@ -9,10 +12,12 @@ data class Channel(
         val fakeData = Channel(
             title = "科技島讀",
             coverUrl = "https://i1.sndcdn.com/avatars-000326154119-ogb1ma-original.jpg",
+            episodeList = listOf(Episode.fakeData, Episode.fakeData, Episode.fakeData)
         )
     }
 }
 
+@Parcelize
 data class Episode(
     val title: String = "",
     val date: String = "",
@@ -20,7 +25,7 @@ data class Episode(
     val summary: String = "",
     var previous: Episode? = null,
     var next: Episode? = null
-) {
+) : Parcelable {
     companion object{
         val fakeData = Episode(
             title = "Ep.145 英雄旅程最終章",

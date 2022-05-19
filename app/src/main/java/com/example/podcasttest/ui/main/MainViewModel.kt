@@ -12,6 +12,15 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: RssRepository): ViewModel() {
     val channel = repository.channel
+    var channelName : String = ""
+
+    init {
+        viewModelScope.launch {
+            channel.collect{
+                channelName = it.title
+            }
+        }
+    }
 
     fun updateChannelRss(id: String, before: String?) = viewModelScope.launch(Dispatchers.IO) {
         repository.refreshChannel(id, before)

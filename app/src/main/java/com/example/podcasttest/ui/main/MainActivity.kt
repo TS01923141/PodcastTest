@@ -1,29 +1,24 @@
 package com.example.podcasttest.ui.main
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
+import com.example.podcasttest.model.data.Channel
+import com.example.podcasttest.ui.episode.EpisodeActivity
 import com.example.podcasttest.ui.theme.PodcastTestTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.util.*
 
+private const val TAG = "MainActivity"
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val viewModel: MainViewModel by viewModels()
-//    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,41 +26,31 @@ class MainActivity : ComponentActivity() {
             PodcastTestTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    HomeScreen(viewModel = viewModel) {
+                        val intent = Intent(this, EpisodeActivity::class.java)
+                        intent.putExtra("channel_name", viewModel.channelName)
+                        intent.putExtra("episode", it.copy(previous = null, next = null))
+                        Log.d(TAG, "onCreate: viewModel.channelName: ${viewModel.channelName}")
+                        startActivity(intent)
+                    }
                 }
             }
         }
-//        //讀取
-//        val EXAMPLE_COUNTER = intPreferencesKey("example_counter")
-//        val exampleCounterFlow: Flow<Int> = dataStore.data
-//            .map { preferences ->
-//                // No type safety.
-//                preferences[EXAMPLE_COUNTER] ?: 0
-//            }
-//
-//        //寫入，要suspend
-//        dataStore.edit { settings ->
-//            val currentCounterValue = settings[EXAMPLE_COUNTER] ?: 0
-//            settings[EXAMPLE_COUNTER] = currentCounterValue + 1
-//        }
     }
 
     override fun onStart() {
         super.onStart()
-        //每次onStart下載新的Rss
-        viewModel.updateChannelRss("322164009",null)
+        checkRssUpdatedTime()
     }
-}
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    PodcastTestTheme {
-        Greeting("Android")
+    private fun checkRssUpdatedTime() {
+        val lastUpdatedTime = getSharedPreferences("updatedTime", MODE_PRIVATE).getLong("Rss", 0)
+        if ((Calendar.getInstance().timeInMillis - lastUpdatedTime) > 5*60*1000 || viewModel.channel.value == Channel()) {
+            viewModel.updateChannelRss("322164009",null)
+            getSharedPreferences("updatedTime", MODE_PRIVATE)
+                .edit()
+                .putLong("Rss", Calendar.getInstance().timeInMillis)
+                .apply()
+        }
     }
 }

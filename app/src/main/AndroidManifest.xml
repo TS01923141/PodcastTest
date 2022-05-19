@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -12,6 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PodcastTest">
+        <activity
+            android:name=".ui.episode.EpisodeActivity"
+            android:exported="true"
+            android:label="@string/title_activity_episode"
+            android:theme="@style/Theme.PodcastTest.NoActionBar" />
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"

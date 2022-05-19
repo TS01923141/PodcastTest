@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PodcastTest</string>
+    <string name="title_activity_episode">EpisodeActivity</string>
+    <string name="data_error">資料錯誤</string>
 </resources>
