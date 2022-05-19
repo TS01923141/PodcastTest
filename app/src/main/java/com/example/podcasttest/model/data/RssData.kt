@@ -22,9 +22,6 @@ data class Episode(
     var next: Episode? = null
 ) {
     companion object{
-        fun toFormatDate(dateString: String): String {
-            return ""
-        }
         val fakeData = Episode(
             title = "Ep.145 英雄旅程最終章",
             date = "Sun, 30 May 2021 22:00:23",

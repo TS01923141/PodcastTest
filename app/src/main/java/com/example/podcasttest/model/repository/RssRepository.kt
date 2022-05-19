@@ -1,5 +1,6 @@
 package com.example.podcasttest.model.repository
 
+import android.util.Log
 import android.util.Xml
 import androidx.lifecycle.LiveData
 import com.example.podcasttest.model.data.Channel
@@ -15,6 +16,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import javax.net.ssl.SSLHandshakeException
 
+private const val TAG = "RssRepository"
 class RssRepository @Inject constructor(private val service: SoundcloudService) {
     private var _channel = MutableStateFlow(Channel())
     val channel: StateFlow<Channel> = _channel

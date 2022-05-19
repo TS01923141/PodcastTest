@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         //每次onStart下載新的Rss
-        viewModel.updateChannelRss()
+        viewModel.updateChannelRss("322164009",null)
     }
 }
 

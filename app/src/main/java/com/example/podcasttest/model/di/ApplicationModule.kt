@@ -13,6 +13,7 @@ import okhttp3.Protocol
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -25,12 +26,13 @@ class ApplicationModule {
     fun provideRetrofit(): Retrofit = Retrofit.Builder()
         .baseUrl("https://feeds.soundcloud.com/")
         .client(createClient())
+        .addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
 
     private fun createClient(): OkHttpClient {
         val okHttpClientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC))
             .connectionPool(ConnectionPool(0, 5, TimeUnit.MINUTES))
             .protocols(listOf(Protocol.HTTP_1_1))
         return okHttpClientBuilder.build()

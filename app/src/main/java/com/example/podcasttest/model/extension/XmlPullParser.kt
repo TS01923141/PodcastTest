@@ -55,7 +55,6 @@ fun XmlPullParser.readImageUrl(parser: XmlPullParser): String {
         if (parser.eventType != XmlPullParser.START_TAG) {
             continue
         }
-        println("readImageUrl parser.name: ${parser.name}")
         when(parser.name) {
             "url" -> imageUrl = readText(parser)
             else -> skip(parser)
@@ -75,7 +74,6 @@ fun XmlPullParser.readEpisode(parser: XmlPullParser): Episode {
         if (parser.eventType != XmlPullParser.START_TAG) {
             continue
         }
-        println("readEpisode parser.name: ${parser.name}")
         when(parser.name) {
             //title
             "title" -> title = readText(parser, "", "title")
