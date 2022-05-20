@@ -1,6 +1,8 @@
 package com.example.podcasttest.ui.episode
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.podcasttest.R
 import com.example.podcasttest.model.data.Episode
+import com.example.podcasttest.ui.player.PlayerActivity
 import com.example.podcasttest.ui.theme.PodcastTestTheme
 
 class EpisodeActivity : ComponentActivity() {
@@ -26,7 +29,11 @@ class EpisodeActivity : ComponentActivity() {
             PodcastTestTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    EpisodeScreen(channelName = channelName!!, episode = episode!!)
+                    EpisodeScreen(channelName = channelName!!, episode = episode!!) {
+                        val intent = Intent(this, PlayerActivity::class.java)
+                        intent.putExtra("episode", episode)
+                        startActivity(intent)
+                    }
                 }
             }
         }

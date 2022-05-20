@@ -1,5 +1,6 @@
 package com.example.podcasttest.ui.episode
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -22,7 +23,7 @@ import com.example.podcasttest.model.data.Episode
 import com.example.podcasttest.ui.theme.PodcastTestTheme
 
 @Composable
-fun EpisodeScreen(channelName: String, episode: Episode, modifier: Modifier = Modifier) {
+fun EpisodeScreen(channelName: String, episode: Episode, modifier: Modifier = Modifier, onClick: () -> Unit) {
     val painter = rememberAsyncImagePainter(model = R.drawable.ic_baseline_play_circle_outline_24)
     Column(modifier = modifier
         .padding(start = 8.dp, end = 8.dp)
@@ -33,7 +34,7 @@ fun EpisodeScreen(channelName: String, episode: Episode, modifier: Modifier = Mo
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = episode.summary, style = MaterialTheme.typography.body2.copy(color = Color.Black.copy(alpha = 0.7f)))
         Spacer(modifier = Modifier.height(16.dp))
-        Icon(painter = painter, contentDescription = null, tint = MaterialTheme.colors.primary, modifier = Modifier.fillMaxWidth().aspectRatio(2f).align(Alignment.CenterHorizontally))
+        Icon(painter = painter, contentDescription = null, tint = MaterialTheme.colors.primary, modifier = Modifier.fillMaxWidth().aspectRatio(2f).align(Alignment.CenterHorizontally).clickable(onClick = onClick))
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
@@ -43,7 +44,7 @@ fun EpisodeScreen(channelName: String, episode: Episode, modifier: Modifier = Mo
 fun PreviewEpisodeScreen() {
     PodcastTestTheme {
         androidx.compose.material.Surface {
-            EpisodeScreen(channelName = Channel.fakeData.title, episode = Episode.fakeData)
+            EpisodeScreen(channelName = Channel.fakeData.title, episode = Episode.fakeData, onClick = {})
         }
     }
 }

@@ -29,8 +29,7 @@ class MainActivity : ComponentActivity() {
                     HomeScreen(viewModel = viewModel) {
                         val intent = Intent(this, EpisodeActivity::class.java)
                         intent.putExtra("channel_name", viewModel.channelName)
-                        intent.putExtra("episode", it.copy(previous = null, next = null))
-                        Log.d(TAG, "onCreate: viewModel.channelName: ${viewModel.channelName}")
+                        intent.putExtra("episode", it)
                         startActivity(intent)
                     }
                 }

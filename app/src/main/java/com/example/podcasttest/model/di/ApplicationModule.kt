@@ -2,6 +2,7 @@ package com.example.podcasttest.model.di
 
 import android.content.Context
 import com.example.podcasttest.model.network.SoundcloudService
+import com.example.podcasttest.model.repository.RssRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,6 +38,10 @@ class ApplicationModule {
             .protocols(listOf(Protocol.HTTP_1_1))
         return okHttpClientBuilder.build()
     }
+
+    @Provides
+    @Singleton
+    fun provideRssRepository(): RssRepository = RssRepository(provideSoundcloudApi())
 
     @Provides
     @Singleton

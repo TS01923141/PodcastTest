@@ -14,6 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PodcastTest">
         <activity
+            android:name=".ui.player.PlayerActivity"
+            android:exported="true"
+            android:label="@string/title_activity_player"
+            android:theme="@style/Theme.PodcastTest.NoActionBar" />
+        <activity
             android:name=".ui.episode.EpisodeActivity"
             android:exported="true"
             android:label="@string/title_activity_episode"

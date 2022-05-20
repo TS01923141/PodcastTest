@@ -8,14 +8,6 @@ import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 import java.io.InputStream
 
-//fun newParserInstance(inputStream: InputStream): XmlPullParser {
-//    val parser: XmlPullParser = Xml.newPullParser()
-//    parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
-//    parser.setInput(inputStream, null)
-//    parser.next()
-//    return parser
-//}
-
 @Throws(XmlPullParserException::class, IOException::class)
 fun XmlPullParser.readChannel(parser: XmlPullParser): Channel {
     var title = ""
@@ -35,10 +27,7 @@ fun XmlPullParser.readChannel(parser: XmlPullParser): Channel {
             //Episode
             "item" -> {
                 val episode = readEpisode(parser)
-                //previous
-                episode.previous = episodeList.lastOrNull()
-                //next
-                episodeList.lastOrNull()?.next = episode
+                episode.position = episodeList.size
                 episodeList.add(episode)
             }
             else -> skip(parser)
@@ -70,6 +59,7 @@ fun XmlPullParser.readEpisode(parser: XmlPullParser): Episode {
     var date = ""
     var coverUrl = ""
     var summary = ""
+    var soundSourceUrl = ""
     while (parser.next() != XmlPullParser.END_TAG && parser.name != "item") {
         if (parser.eventType != XmlPullParser.START_TAG) {
             continue
@@ -87,17 +77,17 @@ fun XmlPullParser.readEpisode(parser: XmlPullParser): Episode {
             }
             //coverUrl
             "itunes:image" -> {
-                parser.require(XmlPullParser.START_TAG, "", "itunes:image")
-                coverUrl = parser.getAttributeValue("", "href")
-                parser.nextTag()
-                parser.require(XmlPullParser.END_TAG, "", "itunes:image")
+                coverUrl = readAttributeValue(parser, "itunes:image", "href")
             }
             //summary
             "itunes:summary" -> summary = readText(parser, "", "itunes:summary")
+            "enclosure" -> {
+                soundSourceUrl = readAttributeValue(parser, "enclosure", "url")
+            }
             else -> skip(parser)
         }
     }
-    return Episode(title, date, coverUrl, summary)
+    return Episode(title = title, date = date, coverUrl = coverUrl, summary = summary, soundSourceUrl = soundSourceUrl)
 }
 
 // Processes title tags in the feed.
@@ -118,6 +108,17 @@ private fun XmlPullParser.readText(parser: XmlPullParser): String {
         result = parser.text
         parser.nextTag()
     }
+    return result
+}
+
+
+@Throws(IOException::class, XmlPullParserException::class)
+private fun XmlPullParser.readAttributeValue(parser: XmlPullParser, tagName: String, attributeName: String): String {
+    var result = ""
+    parser.require(XmlPullParser.START_TAG, "", tagName)
+    result = parser.getAttributeValue("", attributeName)
+    parser.nextTag()
+    parser.require(XmlPullParser.END_TAG, "", tagName)
     return result
 }
 
