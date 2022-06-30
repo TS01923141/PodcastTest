@@ -1,6 +1,7 @@
 package com.example.podcasttest.model.extension
 
 import android.util.Xml
+import com.example.podcasttest.model.data.Episode
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith

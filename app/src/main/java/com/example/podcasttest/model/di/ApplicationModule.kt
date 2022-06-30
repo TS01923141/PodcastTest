@@ -2,6 +2,7 @@ package com.example.podcasttest.model.di
 
 import android.content.Context
 import com.example.podcasttest.model.network.SoundcloudService
+import com.example.podcasttest.model.network.SoundcloudXmlService
 import com.example.podcasttest.model.repository.RssRepository
 import dagger.Module
 import dagger.Provides
@@ -15,6 +16,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -31,6 +33,14 @@ class ApplicationModule {
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
 
+    @Provides
+    @Singleton
+    fun provideXmlRetrofit(): Retrofit = Retrofit.Builder()
+        .baseUrl("https://feeds.soundcloud.com/")
+        .client(createClient())
+        .addConverterFactory(SimpleXmlConverterFactory.create())
+        .build()
+
     private fun createClient(): OkHttpClient {
         val okHttpClientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC))
@@ -41,9 +51,13 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun provideRssRepository(): RssRepository = RssRepository(provideSoundcloudApi())
+    fun provideRssRepository(): RssRepository = RssRepository(provideSoundcloudApi(), provideSoundcloudXmlApi())
 
     @Provides
     @Singleton
     fun provideSoundcloudApi(): SoundcloudService = provideRetrofit().create(SoundcloudService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideSoundcloudXmlApi(): SoundcloudXmlService = provideXmlRetrofit().create(SoundcloudXmlService::class.java)
 }

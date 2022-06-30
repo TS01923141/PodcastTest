@@ -1,7 +1,146 @@
 package com.example.podcasttest.model.data
 
+import android.media.Image
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import org.simpleframework.xml.*
+
+@Root(name = "rss", strict = false)
+class SimpleXmlRss{
+    @field:Attribute var version: String = ""
+    @field:Attribute(name = "xmlns:itunes", required = false) var itunes: String = ""
+    @field:Attribute(name = "xmlns:atom", required = false) var atom: String = ""
+    @field:Element var channel: SimpleXmlChannel = SimpleXmlChannel()
+
+    fun printAtr() {
+        println("SimpleXmlRss")
+        println("version: $version")
+        println("itunes: $itunes")
+        println("atom: $atom")
+    }
+}
+
+@Root(name = "channel", strict = false)
+class SimpleXmlChannel{
+    @field:Path("atom:link[1]") var firstLink : SimpleXmlLink = SimpleXmlLink()
+    @field:Path("atom:link[2]") var secondLink : SimpleXmlLink = SimpleXmlLink()
+    @field:Element var title: String = ""
+    @field:Element(required = false) var link: String = ""
+    @field:Element(name = "pubDate") var date: String = ""
+    @field:Element(required = false) var buildDate: String = ""
+    @field:Element var ttl: String = ""
+    @field:Element var language: String = ""
+    @field:Element var copyright: String = ""
+    @field:Element var webMaster: String = ""
+    @field:Element var description: String = ""
+    @field:Element(name = "itunes:subtitle", required = false) var subtitle = ""
+    @field:Element(name = "itunes:owner", required = false) var owner = SimpleXmlOwner()
+    @field:Element(name = "itunes:author", required = false) var author: String = ""
+    @field:Element(name = "itunes:explicit", required = false) var explicit : String = ""
+    @field:Attribute(name = "href", required = false) @Path("itunes:image") var imageHref: String = ""
+    @field:Element(name = "image") @Path("rss/channel") var image: SimpleXmlImage = SimpleXmlImage()
+//    @Path("image") @Text(required = false) var image: SimpleXmlImage = SimpleXmlImage()
+//    @field:Element(name = "url", required = false) @field:Path("image")  var coverUrl: String = ""
+//    @field:Path("image/title") var imageTitle: String = ""
+//    @field:Path("image/link") var imageLink: String = ""
+    @field:Element(name ="text", required = false) @Path("itunes:category") var category = ""
+//    @field:Attribute(name = "isPermaLink") @Path("guid") var isPermaLink = ""
+//    @field:Element(name = "guid") var guid = ""
+//    @field:Path("image/url") var coverUrl: String = ""
+    @field:ElementList(inline = true) var episodeList: List<SimpleXmlEpisode> = mutableListOf()
+
+    fun printAll() {
+        println("SimpleXmlChannel")
+        firstLink.apply {
+            println("firstLink.href: $href")
+            println("firstLink.rel: $rel")
+            println("firstLink.type: $type")
+        }
+        secondLink.apply {
+            println("secondLink.href: $href")
+            println("secondLink.rel: $rel")
+            println("secondLink.type: $type")
+        }
+        println("title: $title")
+        println("link: $link")
+        println("date: $date")
+        println("buildDate: $buildDate")
+        println("ttl: $ttl")
+        println("language: $language")
+        println("copyright: $copyright")
+        println("webMaster: $webMaster")
+        println("description: $description")
+        println("subtitle: $subtitle")
+        owner.apply {
+            println("owner.name: ${name}")
+            println("owner.email: ${email}")
+        }
+        println("author: $author")
+        println("explicit: $explicit")
+        println("imageHref: $imageHref")
+        image.apply {
+            println("image.url: $url")
+            println("image.title: $title")
+            println("image.link: $link")
+        }
+//        println("coverUrl: $coverUrl")
+//        println("imageTitle: $imageTitle")
+//        println("imageLink: $imageLink")
+        println("category: $category")
+//        episodeList.forEach {
+//            println("episode.title: ${it.title}")
+//            println("episode.coverUrl: ${it.coverUrl}")
+//            println("episode.date: ${it.date}")
+//            println("episode.position: ${it.position}")
+//            println("episode.summary: ${it.summary}")
+//            println("episode.soundSourceUrl: ${it.soundSourceUrl}")
+//        }
+        println("-end-")
+    }
+}
+
+@Root(name = "image", strict = false)
+class SimpleXmlImage{
+    @field:Element(required = false) var url: String = ""
+    @field:Element(required = false) var title: String = ""
+    @field:Element(required = false) var link: String = ""
+}
+
+@Root(name = "atom:link", strict = false)
+class SimpleXmlLink{
+    @field:Attribute var href: String = ""
+    @field:Attribute var rel: String = ""
+    @field:Attribute var type: String = ""
+}
+
+@Root(name = "itunes:owner", strict = false)
+class SimpleXmlOwner{
+    @field:Attribute(name = "itunes:name") var name: String = ""
+    @field:Attribute(name = "itunes:email") var email: String = ""
+}
+
+//@Root(name = "channel", strict = false)
+//data class SimpleXmlChannel(
+//    @field:Element @param:Element var title: String = "",
+//    @field:Element(name = "pubDate") @param:Element(name = "pubDate") var date: String = "",
+//    @field:Element(name = "url", required = false) @param:Element(name = "url", required = false) @field:Path("image")  var coverUrl: String = "",
+//    @field:ElementList(inline = true) @param:ElementList(inline = true) var episodeList: List<SimpleXmlEpisode> = mutableListOf(),
+//)
+
+//@Root(name = "image", strict = false)
+//class SimpleXmlImage{
+//    @field:Element(name = "url") var coverUrl: String = ""
+//}
+
+@Root(name = "item", strict = false)
+class SimpleXmlEpisode{
+    @field:Element var title: String = ""
+    @field:Element(name = "pubDate") var date: String = ""
+    @field:Element(name = "href", required = false) @field:Path("itunes:image") var coverUrl: String = ""
+    @field:Element(name = "itunes:summary", required = false) var summary: String = ""
+    var position: Int = -1
+    @field:Element(name = "url", required = false) @field:Path("enclosure") var soundSourceUrl: String = ""
+}
 
 data class Channel(
     var title: String = "",
