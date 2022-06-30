@@ -5,6 +5,9 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import org.simpleframework.xml.*
 
+//疑似name有冒號或內容有http://就轉不成功
+//有冒號：就會失敗?
+
 @Root(name = "rss", strict = false)
 class SimpleXmlRss{
     @field:Attribute var version: String = ""
